@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#e8eef7">
+<title>Carizma Storyboard Studio</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="./style.css">
+<script src="./vendor/fflate.js" defer></script>
+<script type="module" src="./studio.js"></script>
+</head>
+<body>
+<main class="app">
+  <header class="glass header">
+    <div class="brand" dir="ltr"><span class="logo">◫</span><h1>Carizma <strong>Storyboard</strong></h1></div>
+    <div class="actions">
+      <button class="primary" id="pick-scene">＋ ورود صحنه</button>
+      <input type="file" id="scene-file" accept=".html,.htm,.js" hidden>
+      <button id="code-open">کد صحنه</button>
+      <button id="theme" aria-label="تغییر تم" title="تم روشن و تیره">◐</button>
+    </div>
+  </header>
+
+  <section class="glass stage" aria-label="نمای سه‌بعدی">
+    <div class="stage-head"><div><h2>نمای سه‌بعدی</h2><div id="scene-name" class="muted"></div></div><span id="aspect-badge" class="tag" dir="ltr"></span></div>
+    <div id="view-area" class="view-area"><div id="viewport" class="viewport"><span id="loading">در حال بارگذاری صحنه…</span></div></div>
+    <div class="camera-bar">
+      <div class="actions"><button id="orbit" aria-pressed="true">چرخش</button><button id="pan" aria-pressed="false">جابجایی</button><button id="zoom-in" aria-label="نزدیک‌تر">＋</button><button id="zoom-out" aria-label="دورتر">−</button><button id="reset">نمای اولیه</button></div>
+      <button id="expand">تمام‌صفحه</button>
+    </div>
+    <div id="camera-extra" class="camera-extra">
+      <label for="lens">زاویه دید</label><input id="lens" type="range" min="12" max="95" value="42" dir="ltr"><output id="lens-value" dir="ltr">42°</output>
+      <select id="presets" aria-label="زاویه‌های آماده" hidden></select>
+    </div>
+    <div class="stage-shot actions"><select id="stage-panel" aria-label="انتخاب پنل در نمای سه‌بعدی"></select><button class="primary" id="stage-capture">ثبت این نما</button></div>
+    <p class="hint">بکش تا دوربین بچرخد. برای زوم از اسکرول یا دو انگشت استفاده کن.</p>
+  </section>
+
+  <div class="workspace">
+    <section class="glass panel-box">
+      <div class="section-head"><div><h2>پنل‌های استوری‌بورد</h2><p class="muted" id="progress"></p></div><button id="settings-open">تنظیم پروژه</button></div>
+      <progress id="progress-bar" max="6" value="0" aria-label="تعداد پنل‌های ثبت‌شده"></progress>
+      <div id="panels" class="panels" dir="ltr" aria-label="پنل‌ها"></div>
+      <div class="shot-card">
+        <div class="section-head"><h3 id="selected-title"></h3><button id="restore">بازگردانی زاویه</button></div>
+        <div class="fields"><label>زمان (ثانیه)<input id="time" type="number" min="0" step="0.1" inputmode="decimal" dir="ltr"></label><label>یادداشت پنل<input id="note" maxlength="120" placeholder="مثلاً نمای نزدیک ترازو"></label></div>
+        <div class="actions shot-actions"><button id="capture" class="primary">ثبت پنل</button><button id="single">دانلود PNG</button><button id="clear" class="danger">حذف عکس</button></div>
+      </div>
+    </section>
+
+    <section class="glass export-box">
+      <div class="section-head"><h2>خروجی استوری‌بورد</h2><span id="export-count" class="muted"></span></div>
+      <div class="actions"><button class="primary" id="sheet-open">پیش‌نمایش و دانلود شیت</button><button id="all">دانلود پنل‌ها (ZIP)</button></div>
+      <div class="utility"><button id="backup">پشتیبان پروژه</button><button id="import">بازکردن پشتیبان</button><button id="demo">صحنهٔ نمونه</button></div>
+      <p id="save-status" class="hint" role="status"></p>
+    </section>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </div>
+</main>
+
+<dialog id="code-dialog"><div class="dialog-head"><h2>کد صحنه</h2><button data-close aria-label="بستن">×</button></div>
+  <label>نوع کد <select id="code-type"><option value="js">JavaScript / Three.js</option><option value="html">HTML</option></select></label>
+  <p class="hint">در حالت JavaScript، کد می‌تواند از <code dir="ltr">THREE</code>، <code dir="ltr">scene</code>، <code dir="ltr">camera</code> و <code dir="ltr">controls</code> استفاده کند.</p>
+  <textarea id="code" rows="12" spellcheck="false" dir="ltr" aria-label="متن کد صحنه"></textarea>
+  <div class="actions"><button id="code-demo">درج کد نمونه</button><button id="run" class="primary">اجرای صحنه</button></div>
+</dialog>
+
+<dialog id="settings"><form id="settings-form">
+  <div class="dialog-head"><h2>تنظیم پروژه</h2><button type="button" data-close aria-label="بستن">×</button></div>
+  <div class="settings-fields"><label>نام پروژه<input id="project-name" maxlength="80" required></label>
+  <label>تعداد پنل‌ها<input id="count" type="number" min="1" max="36" required></label>
+  <label>نسبت تصویر<select id="ratio"><option value="9:16">عمودی ۹:۱۶</option><option value="16:9">افقی ۱۶:۹</option><option value="1:1">مربع ۱:۱</option><option value="4:5">عمودی ۴:۵</option></select></label>
+  <label>وضوح PNG<select id="resolution"><option value="1080">استاندارد · ضلع کوتاه ۱۰۸۰</option><option value="720">سبک · ضلع کوتاه ۷۲۰</option><option value="1440">بالا · ضلع کوتاه ۱۴۴۰</option></select></label></div>
+  <button class="primary" type="submit">ذخیره تنظیمات</button>
+</form></dialog>
+
+<dialog id="sheet-dialog"><div class="dialog-head"><h2>چیدمان شیت</h2><button data-close aria-label="بستن">×</button></div>
+  <div class="sheet-options"><label>ستون‌ها<input id="columns" type="number" min="1" max="9" value="3"></label><label><input type="checkbox" id="labels" checked> شماره و زمان</label><label><input type="checkbox" id="blanks"> جای خالی پنل‌ها</label></div>
+  <div id="sheet-preview" class="sheet-preview"></div>
+  <div class="actions"><button class="primary" id="sheet-download">دانلود شیت PNG</button><span id="sheet-size" class="muted"></span></div>
+</dialog>
+</body>
+</html>
